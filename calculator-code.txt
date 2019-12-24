@@ -1,0 +1,16 @@
+//导包
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+
+//接口方法内部业务代码
+if (height <= 0 || weight <= 0) {
+  throw new IllegalArgumentException("Arguments must be above 0");
+}
+
+double heightInMeter = height / 100;
+double bmi = weight / (heightInMeter * heightInMeter);
+double bmiResult = BigDecimal.valueOf(bmi).setScale(1, RoundingMode.HALF_UP).doubleValue();
+
+return new ResponseEntity<Double>(bmiResult, HttpStatus.OK);
+

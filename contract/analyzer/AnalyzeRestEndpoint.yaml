@@ -1,0 +1,44 @@
+openapi: 3.0.2
+info:
+  title: gen
+  version: 1.0.0
+servers:
+- url: http://127.0.0.1
+paths:
+  /analyzeBMI:
+    get:
+      operationId: analyzeBMI
+      parameters:
+      - name: height
+        in: query
+        schema:
+          type: number
+          format: double
+        required: true
+      - name: weight
+        in: query
+        schema:
+          type: number
+          format: double
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BMIViewObject'
+components:
+  schemas:
+    BMIViewObject:
+      type: object
+      properties:
+        result:
+          type: number
+          format: double
+        instanceId:
+          type: string
+        callTime:
+          type: string
+        analyzeResult:
+          type: string

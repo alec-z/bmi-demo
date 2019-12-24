@@ -1,0 +1,44 @@
+//导包
+import org.apache.servicecomb.provider.springmvc.reference.RestTemplateBuilder;
+import org.apache.servicecomb.serviceregistry.RegistryUtils;
+import org.apache.servicecomb.serviceregistry.api.registry.MicroserviceInstance;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import org.springframework.web.client.RestTemplate;
+
+
+//成员变量
+private static RestTemplate restTemplate = RestTemplateBuilder.create();
+
+
+//接口方法内部业务代码
+if (height <= 0 || weight <= 0) {
+  throw new IllegalArgumentException("Arguments must be above 0");
+}
+
+Map<String,Object> paramMap = new HashMap<String, Object>() {{
+  put("height",height);
+  put("weight",weight);
+}};
+
+Double bmiResult = restTemplate.getForObject(
+        "cse://calculator/calculateBMI?height={height}&weight={weight}",
+        Double.class,
+        paramMap);
+
+String analyzeResult = "";
+if (bmiResult >= 18.5 && bmiResult <= 24.9) {
+  analyzeResult = "healthy";
+} else {
+  analyzeResult = "unhealthy";
+}
+
+BMIViewObject result = new BMIViewObject();
+result.setResult(bmiResult);
+result.setAnalyzeResult(analyzeResult);
+
+result.setCallTime(new SimpleDateFormat("HH:mm:ss").format(new Date()));
+result.setInstanceId(RegistryUtils.getMicroserviceInstance().getInstanceId());
+
+return new ResponseEntity<BMIViewObject>(result, HttpStatus.OK);
